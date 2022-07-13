@@ -3,6 +3,7 @@ package generics
 import (
 	"context"
 	"fmt"
+	"io"
 )
 
 type GenericStore1[T Key1, S any] interface {
@@ -29,4 +30,10 @@ type KeyImpl []byte
 
 func (x KeyImpl) String() string {
 	return string(x)
+}
+
+type Wrapper[T any] struct{}
+
+type WrappedWriter interface {
+	WrappedWrite() Wrapper[io.Writer]
 }

@@ -5,6 +5,7 @@ package generics
 
 import (
 	"context"
+	"io"
 	"sync"
 )
 
@@ -383,5 +384,63 @@ func (mock *AliasStoreMock) GetCalls() []struct {
 	mock.lockGet.RLock()
 	calls = mock.calls.Get
 	mock.lockGet.RUnlock()
+	return calls
+}
+
+// Ensure, that WrappedWriterMock does implement WrappedWriter.
+// If this is not the case, regenerate this file with moq.
+var _ WrappedWriter = &WrappedWriterMock{}
+
+// WrappedWriterMock is a mock implementation of WrappedWriter.
+//
+// 	func TestSomethingThatUsesWrappedWriter(t *testing.T) {
+//
+// 		// make and configure a mocked WrappedWriter
+// 		mockedWrappedWriter := &WrappedWriterMock{
+// 			WrappedWriteFunc: func() Wrapper[io.Writer] {
+// 				panic("mock out the WrappedWrite method")
+// 			},
+// 		}
+//
+// 		// use mockedWrappedWriter in code that requires WrappedWriter
+// 		// and then make assertions.
+//
+// 	}
+type WrappedWriterMock struct {
+	// WrappedWriteFunc mocks the WrappedWrite method.
+	WrappedWriteFunc func() Wrapper[io.Writer]
+
+	// calls tracks calls to the methods.
+	calls struct {
+		// WrappedWrite holds details about calls to the WrappedWrite method.
+		WrappedWrite []struct {
+		}
+	}
+	lockWrappedWrite sync.RWMutex
+}
+
+// WrappedWrite calls WrappedWriteFunc.
+func (mock *WrappedWriterMock) WrappedWrite() Wrapper[io.Writer] {
+	if mock.WrappedWriteFunc == nil {
+		panic("WrappedWriterMock.WrappedWriteFunc: method is nil but WrappedWriter.WrappedWrite was just called")
+	}
+	callInfo := struct {
+	}{}
+	mock.lockWrappedWrite.Lock()
+	mock.calls.WrappedWrite = append(mock.calls.WrappedWrite, callInfo)
+	mock.lockWrappedWrite.Unlock()
+	return mock.WrappedWriteFunc()
+}
+
+// WrappedWriteCalls gets all the calls that were made to WrappedWrite.
+// Check the length with:
+//     len(mockedWrappedWriter.WrappedWriteCalls())
+func (mock *WrappedWriterMock) WrappedWriteCalls() []struct {
+} {
+	var calls []struct {
+	}
+	mock.lockWrappedWrite.RLock()
+	calls = mock.calls.WrappedWrite
+	mock.lockWrappedWrite.RUnlock()
 	return calls
 }

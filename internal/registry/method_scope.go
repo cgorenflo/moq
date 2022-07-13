@@ -82,7 +82,9 @@ func (m MethodScope) populateImports(t types.Type, imports map[string]*Package) 
 		if pkg := t.Obj().Pkg(); pkg != nil {
 			imports[stripVendorPath(pkg.Path())] = m.registry.AddImport(pkg)
 		}
-
+		for i := 0; i < t.TypeArgs().Len(); i++ {
+			m.populateImports(t.TypeArgs().At(i), imports)
+		}
 	case *types.Array:
 		m.populateImports(t.Elem(), imports)
 
